@@ -278,8 +278,8 @@ static NSString * const ZSSEditorContent = @"document.activeElement.id=='zss_edi
 
 - (void)setContentHeight:(float)contentHeight;
 
-- (void)undo:(ZSSBarButtonItem *)barButtonItem;
-- (void)redo:(ZSSBarButtonItem *)barButtonItem;
+- (void)undo:(ZSSBarButtonItem * _Nullable)barButtonItem;
+- (void)redo:(ZSSBarButtonItem * _Nullable)barButtonItem;
 - (void)heading1;
 - (void)heading2;
 - (void)heading3;

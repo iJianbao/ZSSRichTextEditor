@@ -102,7 +102,16 @@ static Class hackishFixClass = Nil;
     if (browserView == nil) {
         return;
     }
-    [self ensureHackishSubclassExistsOfBrowserViewClass:[browserView class]];
+//    [self ensureHackishSubclassExistsOfBrowserViewClass:[browserView class]];
+    if (!hackishFixClass) {
+        Class newClass = objc_allocateClassPair([browserView class], hackishFixClassName, 0);
+        newClass = objc_allocateClassPair([browserView class], hackishFixClassName, 0);
+        IMP nilImp = [self methodForSelector:@selector(methodReturningNil)];
+        class_addMethod(newClass, @selector(inputAccessoryView), nilImp, "@@:");
+        objc_registerClassPair(newClass);
+        
+        hackishFixClass = newClass;
+    }
     
     if (value) {
         object_setClass(browserView, hackishFixClass);
