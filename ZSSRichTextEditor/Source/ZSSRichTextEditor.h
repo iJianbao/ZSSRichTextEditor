@@ -11,6 +11,7 @@
 #import "HRColorPickerViewController.h"
 #import "ZSSFontsViewController.h"
 
+NS_ASSUME_NONNULL_BEGIN
 /**
  *  The types of toolbar items that can be added
  */
@@ -273,4 +274,10 @@ static NSString * const ZSSEditorContent = @"document.activeElement.id=='zss_edi
  */
 - (void)setCSS:(NSString *)css;
 
+- (void)setFooterHeight:(float)footerHeight;
+
+- (void)setContentHeight:(float)contentHeight;
+
 @end
+
+NS_ASSUME_NONNULL_END
