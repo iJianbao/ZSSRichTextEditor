@@ -65,7 +65,10 @@ static NSString * const ZSSEditorContent = @"document.activeElement.id=='zss_edi
 
 - (instancetype)initWithFrame:(CGRect)frame presentViewController:(__weak UIViewController *)presentViewController;
 
-
+/*
+ 
+ */
+@property (nonatomic, weak, readonly) UIViewController *presentViewController;
 /*
  *  ZSSTextView for displaying the source code for what is displayed in the editor view
  */
