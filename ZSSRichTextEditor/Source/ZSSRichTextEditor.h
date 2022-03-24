@@ -57,13 +57,35 @@ static NSString * const ZSSEditorText = @"zss_editor.getText();";
 static NSString * const ZSSEditorContent = @"document.activeElement.id=='zss_editor_content'";
 
 @class ZSSBarButtonItem;
-
+@class ZSSTextView;
 /**
  *  The viewController used with ZSSRichTextEditor
  */
 @interface ZSSRichTextEditor : UIView <WKUIDelegate, WKNavigationDelegate, WKScriptMessageHandler, HRColorPickerViewControllerDelegate, UITextViewDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate,ZSSFontsViewControllerDelegate>
 
 - (instancetype)initWithFrame:(CGRect)frame presentViewController:(__weak UIViewController *)presentViewController;
+
+
+/*
+ *  ZSSTextView for displaying the source code for what is displayed in the editor view
+ */
+@property (nonatomic, strong) ZSSTextView *sourceView;
+
+/*
+ *  WKWebView for writing/editing/displaying the content
+ */
+@property (nonatomic, strong) WKWebView *editorView;
+
+/*
+ *  Holder for all of the toolbar components
+ */
+@property (nonatomic, strong) UIView *toolbarHolder;
+
+/*
+ *  Image Picker for selecting photos from users photo library
+ */
+@property (nonatomic, strong) UIImagePickerController *imagePicker;
+
 /**
  *  The base URL to use for the webView
  */
@@ -108,6 +130,21 @@ static NSString * const ZSSEditorContent = @"document.activeElement.id=='zss_edi
  *  Color to tint selected items
  */
 @property (nonatomic, strong) UIColor *toolbarItemSelectedTintColor;
+
+/*
+ *  NSString holding the selected image Alt value
+ */
+@property (nonatomic, strong) NSString *selectedImageAlt;
+
+/*
+ *  CGFloat holdign the selected image scale value
+ */
+@property (nonatomic, assign) CGFloat selectedImageScale;
+
+/*
+ *  NSString holding the base64 value of the current image
+ */
+@property (nonatomic, strong) NSString *imageBase64String;
 
 /**
  *  Sets the HTML for the entire editor

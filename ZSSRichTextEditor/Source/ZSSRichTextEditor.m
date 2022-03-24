@@ -134,24 +134,9 @@ static Class hackishFixClass = Nil;
 @property (nonatomic, strong) UIToolbar *toolbar;
 
 /*
- *  Holder for all of the toolbar components
- */
-@property (nonatomic, strong) UIView *toolbarHolder;
-
-/*
  *  String for the HTML
  */
 @property (nonatomic, strong) NSString *htmlString;
-
-/*
- *  WKWebView for writing/editing/displaying the content
- */
-@property (nonatomic, strong) WKWebView *editorView;
-
-/*
- *  ZSSTextView for displaying the source code for what is displayed in the editor view
- */
-@property (nonatomic, strong) ZSSTextView *sourceView;
 
 /*
  *  CGRect for holding the frame for the editor view
@@ -189,21 +174,6 @@ static Class hackishFixClass = Nil;
 @property (nonatomic, strong) NSString *selectedImageURL;
 
 /*
- *  NSString holding the selected image Alt value
- */
-@property (nonatomic, strong) NSString *selectedImageAlt;
-
-/*
- *  CGFloat holdign the selected image scale value
- */
-@property (nonatomic, assign) CGFloat selectedImageScale;
-
-/*
- *  NSString holding the base64 value of the current image
- */
-@property (nonatomic, strong) NSString *imageBase64String;
-
-/*
  *  Bar button item for the keyboard dismiss button in the toolbar
  */
 @property (nonatomic, strong) UIBarButtonItem *keyboardItem;
@@ -237,11 +207,6 @@ static Class hackishFixClass = Nil;
  *  BOOL for if the editor is paste or not
  */
 @property (nonatomic) BOOL editorPaste;
-/*
- *  Image Picker for selecting photos from users photo library
- */
-@property (nonatomic, strong) UIImagePickerController *imagePicker;
-
 
 // local var to hold first responder state after callback
 @property (nonatomic) BOOL isFirstResponderUpdated;
