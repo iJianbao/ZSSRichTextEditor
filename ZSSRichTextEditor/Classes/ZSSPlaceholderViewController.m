@@ -7,13 +7,20 @@
 //
 
 #import "ZSSPlaceholderViewController.h"
+#import "ZSSRichTextEditor.h"
 
 @interface ZSSPlaceholderViewController ()
+
+@property (nonatomic, strong) ZSSRichTextEditor *richTextEditor;
 
 @end
 
 @implementation ZSSPlaceholderViewController
 
+- (void)loadView {
+    _richTextEditor = [[ZSSRichTextEditor alloc] initWithFrame:[UIScreen mainScreen].bounds presentViewController:self];
+    self.view = _richTextEditor;
+}
 
 - (void)viewDidLoad
 {
@@ -21,7 +28,7 @@
     
     self.title = @"Placeholder";
     
-    self.placeholder = @"Please tap to start editing";
+    self.richTextEditor.placeholder = @"Please tap to start editing";
     
 }
 

@@ -7,8 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ZSSRichTextEditor.h"
 
-@interface ZSSDemoViewController : ZSSRichTextEditor
+@class ZSSRichTextEditor;
+@interface ZSSDemoViewController : UIViewController
+
+@property (nonatomic, strong, readonly) ZSSRichTextEditor *richTextEditor;
 
 @end

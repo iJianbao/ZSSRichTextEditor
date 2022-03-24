@@ -7,7 +7,7 @@
 //
 
 #import "ZSSDemoPickerViewController.h"
-
+#import "ZSSRichTextEditor.h"
 
 @interface ZSSDemoPickerViewController ()
 @property (nonatomic, strong) UITextField *textField;
@@ -55,9 +55,9 @@
     
     ZSSDemoViewController *vc = self.demoView;
     if (!self.isInsertImagePicker) {
-        [vc showInsertLinkDialogWithLink:self.textField.text title:nil];
+        [vc.richTextEditor showInsertLinkDialogWithLink:self.textField.text title:nil];
     } else {
-        [vc showInsertImageDialogWithLink:self.textField.text alt:nil];
+        [vc.richTextEditor showInsertImageDialogWithLink:self.textField.text alt:nil];
     }
     
 }

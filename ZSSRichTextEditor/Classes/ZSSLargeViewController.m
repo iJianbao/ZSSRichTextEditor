@@ -7,13 +7,20 @@
 //
 
 #import "ZSSLargeViewController.h"
+#import "ZSSRichTextEditor.h"
 
 @interface ZSSLargeViewController ()
+
+@property (nonatomic, strong) ZSSRichTextEditor *richTextEditor;
 
 @end
 
 @implementation ZSSLargeViewController
 
+- (void)loadView {
+    _richTextEditor = [[ZSSRichTextEditor alloc] initWithFrame:[UIScreen mainScreen].bounds presentViewController:self];
+    self.view = _richTextEditor;
+}
 
 - (void)viewDidLoad
 {
@@ -21,7 +28,7 @@
     
     self.title = @"Large";
     
-    self.alwaysShowToolbar = YES;
+    self.richTextEditor.alwaysShowToolbar = YES;
     
     // HTML Content to set in the editor
     NSString *html = @"<h1>Large Editor</h1>"
@@ -32,7 +39,7 @@
     "<p>Mauris sed consequat augue. <strong>Aliquam accumsan erat lacus</strong>, consequat volutpat augue imperdiet vitae. Sed tempus dui quis faucibus tempor. Aliquam ultricies in turpis et vehicula. Suspendisse potenti. Duis iaculis rhoncus enim sed tempus. Cras non metus sed erat accumsan gravida vitae in lacus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Integer vel cursus ligula, a auctor lacus. In rhoncus massa <em>varius sagittis ultrices</em>. Donec aliquam, nisl sit amet hendrerit pretium, lorem quam mollis purus, ac interdum elit mi et neque. Etiam porta rutrum lacinia. Nullam nec vestibulum ligula. Nam nec ipsum odio. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>";
     
     // Set the HTML contents of the editor
-    [self setHTML:html];
+    [self.richTextEditor setHTML:html];
     
 }
 

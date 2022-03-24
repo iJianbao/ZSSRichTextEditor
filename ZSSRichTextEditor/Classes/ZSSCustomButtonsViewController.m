@@ -8,13 +8,20 @@
 
 #import "ZSSCustomButtonsViewController.h"
 #import "ZSSBarButtonItem.h"
+#import "ZSSRichTextEditor.h"
 
 @interface ZSSCustomButtonsViewController ()
+
+@property (nonatomic, strong) ZSSRichTextEditor *richTextEditor;
 
 @end
 
 @implementation ZSSCustomButtonsViewController
 
+- (void)loadView {
+    _richTextEditor = [[ZSSRichTextEditor alloc] initWithFrame:[UIScreen mainScreen].bounds presentViewController:self];
+    self.view = _richTextEditor;
+}
 
 - (void)viewDidLoad
 {
@@ -27,10 +34,10 @@
     NSString *html = @"<p>This editor is using <strong>custom buttons</strong>.</p>";
     
     // Set the HTML contents of the editor
-    [self setHTML:html];
+    [self.richTextEditor setHTML:html];
     
     // Don't allow editor toolbar buttons (you can if you want)
-    self.enabledToolbarItems = @[ZSSRichTextEditorToolbarNone];
+    self.richTextEditor.enabledToolbarItems = @[ZSSRichTextEditorToolbarNone];
     
     // Create the custom buttons
     UIButton *myButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 50, 28.0f)];
@@ -38,11 +45,11 @@
     [myButton addTarget:self
                  action:@selector(didTapCustomToolbarButton:)
        forControlEvents:UIControlEventTouchUpInside];
-    [self addCustomToolbarItemWithButton:myButton];
+    [self.richTextEditor addCustomToolbarItemWithButton:myButton];
     
     // Custom image button
     ZSSBarButtonItem *item = [[ZSSBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ZSSinsertkeyword.png"] style:UIBarButtonItemStylePlain target:self action:@selector(didTapCustomToolbarButton:)];
-    [self addCustomToolbarItem:item];
+    [self.richTextEditor addCustomToolbarItem:item];
     
 }
 

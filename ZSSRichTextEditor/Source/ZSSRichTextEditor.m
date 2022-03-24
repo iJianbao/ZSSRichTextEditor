@@ -16,6 +16,38 @@
 
 @import JavaScriptCore;
 
+/*----------------------------------ZSSRichLeakAvoider-------------------------------------------*/
+/// 解决循环引用问题
+NS_ASSUME_NONNULL_BEGIN
+ 
+@interface ZSSRichLeakAvoider : NSObject<WKScriptMessageHandler>
+ 
+- (instancetype)initWithMessageHandler:(id <WKScriptMessageHandler>)messageHander;
+
+@end
+ 
+NS_ASSUME_NONNULL_END
+ 
+@interface ZSSRichLeakAvoider ()
+@property (nonatomic, weak) id <WKScriptMessageHandler> scriptDelegate;
+@end
+ 
+@implementation ZSSRichLeakAvoider
+- (instancetype)initWithMessageHandler:(id <WKScriptMessageHandler>)messageHander {
+    if (self = [super init]) {
+        _scriptDelegate = messageHander;
+    }
+    return self;
+}
+ 
+- (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message {
+    if (self.scriptDelegate && [self.scriptDelegate respondsToSelector:@selector(userContentController:didReceiveScriptMessage:)]) {
+        [self.scriptDelegate userContentController:userContentController didReceiveScriptMessage:message];
+    }
+}
+@end
+/*----------------------------------ZSSRichLeakAvoider-------------------------------------------*/
+
 
 /**
  
@@ -87,6 +119,10 @@ static Class hackishFixClass = Nil;
 
 @interface ZSSRichTextEditor ()
 
+/*
+ 
+ */
+@property (nonatomic, weak) UIViewController *presentViewController;
 /*
  *  Scroll view containing the toolbar
  */
@@ -244,14 +280,21 @@ static CGFloat kJPEGCompression = 0.8;
 static CGFloat kDefaultScale = 0.5;
 
 #pragma mark - View Did Load Section
-- (void)viewDidLoad {
-    
-    [super viewDidLoad];
-    
+
+- (instancetype)initWithFrame:(CGRect)frame presentViewController:(__weak UIViewController *)presentViewController {
+    if (self = [super initWithFrame:frame]) {
+        _presentViewController = presentViewController;
+        [self buildData:frame];
+    }
+    return self;
+}
+
+- (void)buildData:(CGRect)frame {
+        
     //Initialise variables
     self.editorLoaded = NO;
     self.receiveEditorDidChangeEvents = NO;
-    self.alwaysShowToolbar = NO;
+    self.alwaysShowToolbar = YES;
     self.shouldShowKeyboard = YES;
     self.formatHTML = YES;
     
@@ -259,7 +302,7 @@ static CGFloat kDefaultScale = 0.5;
     self.enabledToolbarItems = [[NSArray alloc] init];
     
     //Frame for the source view and editor view
-    CGRect frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
+//    CGRect frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
     
     //Source View
     [self createSourceViewWithFrame:frame];
@@ -271,20 +314,20 @@ static CGFloat kDefaultScale = 0.5;
     [self setUpImagePicker];
     
     //Scrolling View
-    [self createToolBarScroll];
+    [self createToolBarScroll:frame];
     
     //Toolbar with icons
-    [self createToolbar];
+    [self createToolbar:frame];
     
     //Parent holding view
-    [self createParentHoldingView];
+    [self createParentHoldingView:frame];
     
     //Hide Keyboard
     if (![self isIpad]) {
         NSBundle* bundle = [NSBundle bundleForClass:[ZSSRichTextEditor class]];
         
         // Toolbar holder used to crop and position toolbar
-        UIView *toolbarCropper = [[UIView alloc] initWithFrame:CGRectMake(self.view.frame.size.width-44, 0, 44, 44)];
+        UIView *toolbarCropper = [[UIView alloc] initWithFrame:CGRectMake(frame.size.width-44, 0, 44, 44)];
         toolbarCropper.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
         toolbarCropper.clipsToBounds = YES;
         
@@ -306,7 +349,7 @@ static CGFloat kDefaultScale = 0.5;
         
     }
     
-    [self.view addSubview:self.toolbarHolder];
+    [self addSubview:self.toolbarHolder];
     
     //Build the toolbar
     [self buildToolbar];
@@ -317,27 +360,35 @@ static CGFloat kDefaultScale = 0.5;
         [self loadResources];
         
     }
-    
-}
-
-#pragma mark - View Will Appear Section
-- (void)viewWillAppear:(BOOL)animated {
-    
-    [super viewWillAppear:animated];
-    
     //Add observers for keyboard showing or hiding notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShowOrHide:) name:UIKeyboardWillChangeFrameNotification object:nil];
 }
 
-#pragma mark - View Will Disappear Section
-- (void)viewWillDisappear:(BOOL)animated {
-    
-    [super viewWillDisappear:animated];
-    
+- (void)dealloc {
     //Remove observers for keyboard showing or hiding notifications
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillChangeFrameNotification object:nil];
-    
+    [self.editorView.configuration.userContentController removeScriptMessageHandlerForName:@"jsm"];
+    NSLog(@"%s------%@", __func__, self.class);
 }
+
+//#pragma mark - View Will Appear Section
+//- (void)viewWillAppear:(BOOL)animated {
+//
+//    [super viewWillAppear:animated];
+//
+//    //Add observers for keyboard showing or hiding notifications
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShowOrHide:) name:UIKeyboardWillChangeFrameNotification object:nil];
+//}
+//
+//#pragma mark - View Will Disappear Section
+//- (void)viewWillDisappear:(BOOL)animated {
+//
+//    [super viewWillDisappear:animated];
+//
+//    //Remove observers for keyboard showing or hiding notifications
+//    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillChangeFrameNotification object:nil];
+//
+//}
 
 #pragma mark - Set Up View Section
 
@@ -351,7 +402,7 @@ static CGFloat kDefaultScale = 0.5;
     self.sourceView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     self.sourceView.autoresizesSubviews = YES;
     self.sourceView.delegate = self;
-    [self.view addSubview:self.sourceView];
+    [self addSubview:self.sourceView];
     
 }
 
@@ -362,7 +413,10 @@ static CGFloat kDefaultScale = 0.5;
     WKWebViewConfiguration *config = [[WKWebViewConfiguration alloc] init];
 
     WKUserContentController *contentController = [[WKUserContentController alloc] init];
-    [contentController addScriptMessageHandler:self name:@"jsm"];
+    // 在此注入 self，导致循环引用
+//    [contentController addScriptMessageHandler:self name:@"jsm"];
+    [contentController addScriptMessageHandler:[[ZSSRichLeakAvoider alloc] initWithMessageHandler:self] name:@"jsm"];
+
     
     config.userContentController = contentController;
 
@@ -394,7 +448,7 @@ static CGFloat kDefaultScale = 0.5;
     self.editorView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
     self.editorView.scrollView.bounces = YES;
     self.editorView.backgroundColor = [UIColor whiteColor];
-    [self.view addSubview:self.editorView];
+    [self addSubview:self.editorView];
     
 }
 
@@ -408,15 +462,15 @@ static CGFloat kDefaultScale = 0.5;
     
 }
 
-- (void)createToolBarScroll {
+- (void)createToolBarScroll:(CGRect)frame {
     
-    self.toolBarScroll = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, [self isIpad] ? self.view.frame.size.width : self.view.frame.size.width - 44, 44)];
+    self.toolBarScroll = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, [self isIpad] ? frame.size.width : frame.size.width - 44, 44)];
     self.toolBarScroll.backgroundColor = [UIColor clearColor];
     self.toolBarScroll.showsHorizontalScrollIndicator = NO;
     
 }
 
-- (void)createToolbar {
+- (void)createToolbar:(CGRect)frame {
     
     self.toolbar = [[UIToolbar alloc] initWithFrame:CGRectZero];
     self.toolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
@@ -426,19 +480,19 @@ static CGFloat kDefaultScale = 0.5;
     
 }
 
-- (void)createParentHoldingView {
+- (void)createParentHoldingView:(CGRect)frame {
     
     //Background Toolbar
-    UIToolbar *backgroundToolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 44)];
+    UIToolbar *backgroundToolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, 44)];
     backgroundToolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     
     //Parent holding view
     self.toolbarHolder = [[UIView alloc] init];
     
     if (_alwaysShowToolbar) {
-        self.toolbarHolder.frame = CGRectMake(0, self.view.frame.size.height - 44, self.view.frame.size.width, 44);
+        self.toolbarHolder.frame = CGRectMake(0, frame.size.height - 44, frame.size.width, 44);
     } else {
-        self.toolbarHolder.frame = CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, 44);
+        self.toolbarHolder.frame = CGRectMake(0, frame.size.height, frame.size.width, 44);
     }
     
     self.toolbarHolder.autoresizingMask = self.toolbar.autoresizingMask;
@@ -1099,7 +1153,7 @@ static CGFloat kDefaultScale = 0.5;
 
 - (void)getHTML:(void (^ _Nullable)(_Nullable id, NSError * _Nullable error))completionHandler {
     
-    
+    __weak typeof(self) weakSelf = self;
     [self.editorView evaluateJavaScript:ZSSEditorHTML completionHandler:^(NSString *result, NSError *error) {
         
         if (error != NULL) {
@@ -1108,11 +1162,11 @@ static CGFloat kDefaultScale = 0.5;
         
         NSLog(@"%@", result);
      
-        NSString *html = [self removeQuotesFromHTML:result];
+        NSString *html = [weakSelf removeQuotesFromHTML:result];
         
         NSLog(@"%@", html);
         
-        [self tidyHTML:html completionHandler:^(NSString *result, NSError *error) {
+        [weakSelf tidyHTML:html completionHandler:^(NSString *result, NSError *error) {
             completionHandler(result, error);
         }];
 
@@ -1144,27 +1198,28 @@ static CGFloat kDefaultScale = 0.5;
 }
 
 - (void)updateEditor {
+    __weak typeof(self) weakSelf = self;
     [self getHTML:^(NSString *htmlResult, NSError * _Nullable error) {
-        [self getText:^(NSString *textResult, NSError * _Nullable error) {
-            [self editorDidChangeWithText:textResult andHTML:htmlResult];
+        [weakSelf getText:^(NSString *textResult, NSError * _Nullable error) {
+            [weakSelf editorDidChangeWithText:textResult andHTML:htmlResult];
         }];
     }];
 }
 
 - (void)dismissKeyboard {
-    [self.view endEditing:YES];
+    [self endEditing:YES];
 }
 
 - (BOOL)isFirstResponder {
-    
+    __weak typeof(self) weakSelf = self;
     [self.editorView evaluateJavaScript:ZSSEditorContent completionHandler:^(NSNumber *result, NSError *error) {
         
         //save the result as a bool and then update the UI
-        self.isFirstResponderUpdated = [result boolValue];
-        if (self.isFirstResponderUpdated == true) {
-            [self becomeFirstResponder];
+        weakSelf.isFirstResponderUpdated = [result boolValue];
+        if (weakSelf.isFirstResponderUpdated == true) {
+            [weakSelf becomeFirstResponder];
         } else {
-            [self resignFirstResponder];
+            [weakSelf resignFirstResponder];
         }
     }];
     
@@ -1175,9 +1230,9 @@ static CGFloat kDefaultScale = 0.5;
 
 - (void)showHTMLSource:(ZSSBarButtonItem *)barButtonItem {
     if (self.sourceView.hidden) {
-        
+        __weak typeof(self) weakSelf = self;
         [self getHTML:^(NSString *result, NSError * _Nullable error) {
-            self.sourceView.text = result;
+            weakSelf.sourceView.text = result;
         }];
         
         self.sourceView.hidden = NO;
@@ -1364,7 +1419,7 @@ static CGFloat kDefaultScale = 0.5;
     //Call picker
     ZSSFontsViewController *fontPicker = [ZSSFontsViewController cancelableFontPickerViewControllerWithFontFamily:ZSSFontFamilyDefault];
     fontPicker.delegate = self;
-    [self.navigationController pushViewController:fontPicker animated:YES];
+    [self.presentViewController.navigationController pushViewController:fontPicker animated:YES];
     
 }
 
@@ -1425,7 +1480,7 @@ static CGFloat kDefaultScale = 0.5;
     colorPicker.delegate = self;
     colorPicker.tag = 1;
     colorPicker.title = NSLocalizedString(@"Text Color", nil);
-    [self.navigationController pushViewController:colorPicker animated:YES];
+    [self.presentViewController.navigationController pushViewController:colorPicker animated:YES];
     
 }
 
@@ -1441,7 +1496,7 @@ static CGFloat kDefaultScale = 0.5;
     colorPicker.delegate = self;
     colorPicker.tag = 2;
     colorPicker.title = NSLocalizedString(@"BG Color", nil);
-    [self.navigationController pushViewController:colorPicker animated:YES];
+    [self.presentViewController.navigationController pushViewController:colorPicker animated:YES];
     
 }
 
@@ -1515,22 +1570,23 @@ static CGFloat kDefaultScale = 0.5;
                 textField.text = title;
             }
         }];
+        __weak typeof(self) weakSelf = self;
         [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
-            [self focusTextEditor];
+            [weakSelf focusTextEditor];
         }]];
         [alertController addAction:[UIAlertAction actionWithTitle:insertButtonTitle style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             
             UITextField *linkURL = [alertController.textFields objectAtIndex:0];
             UITextField *title = [alertController.textFields objectAtIndex:1];
-            if (!self.selectedLinkURL) {
-                [self insertLink:linkURL.text title:title.text];
+            if (!weakSelf.selectedLinkURL) {
+                [weakSelf insertLink:linkURL.text title:title.text];
                 //NSLog(@"insert link");
             } else {
-                [self updateLink:linkURL.text title:title.text];
+                [weakSelf updateLink:linkURL.text title:title.text];
             }
-            [self focusTextEditor];
+            [weakSelf focusTextEditor];
         }]];
-        [self presentViewController:alertController animated:YES completion:NULL];
+        [self.presentViewController presentViewController:alertController animated:YES completion:NULL];
         
     } else {
         
@@ -1690,21 +1746,22 @@ static CGFloat kDefaultScale = 0.5;
                 textField.text = alt;
             }
         }];
+        __weak typeof(self) weakSelf = self;
         [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
-            [self focusTextEditor];
+            [weakSelf focusTextEditor];
         }]];
         [alertController addAction:[UIAlertAction actionWithTitle:insertButtonTitle style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             
             UITextField *imageURL = [alertController.textFields objectAtIndex:0];
             UITextField *alt = [alertController.textFields objectAtIndex:1];
-            if (!self.selectedImageURL) {
-                [self insertImage:imageURL.text alt:alt.text];
+            if (!weakSelf.selectedImageURL) {
+                [weakSelf insertImage:imageURL.text alt:alt.text];
             } else {
-                [self updateImage:imageURL.text alt:alt.text];
+                [weakSelf updateImage:imageURL.text alt:alt.text];
             }
-            [self focusTextEditor];
+            [weakSelf focusTextEditor];
         }]];
-        [self presentViewController:alertController animated:YES completion:NULL];
+        [self.presentViewController presentViewController:alertController animated:YES completion:NULL];
         
     } else {
         
@@ -1763,8 +1820,9 @@ static CGFloat kDefaultScale = 0.5;
         }];
         
         //Cancel action
+        __weak typeof(self) weakSelf = self;
         [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
-            [self focusTextEditor];
+            [weakSelf focusTextEditor];
         }]];
         
         //Insert action
@@ -1772,14 +1830,14 @@ static CGFloat kDefaultScale = 0.5;
             UITextField *textFieldAlt = [alertController.textFields objectAtIndex:0];
             UITextField *textFieldScale = [alertController.textFields objectAtIndex:1];
             
-            self.selectedImageScale = [textFieldScale.text floatValue]?:kDefaultScale;
-            self.selectedImageAlt = textFieldAlt.text?:@"";
+            weakSelf.selectedImageScale = [textFieldScale.text floatValue]?:kDefaultScale;
+            weakSelf.selectedImageAlt = textFieldAlt.text?:@"";
             
-            [self presentViewController:self.imagePicker animated:YES completion:nil];
+            [weakSelf.presentViewController presentViewController:weakSelf.imagePicker animated:YES completion:nil];
             
         }]];
         
-        [self presentViewController:alertController animated:YES completion:NULL];
+        [self.presentViewController presentViewController:alertController animated:YES completion:NULL];
         
     } else {
         
@@ -1918,9 +1976,9 @@ static CGFloat kDefaultScale = 0.5;
         if (_receiveEditorDidChangeEvents) {
             [self updateEditor];
         }
-        
+        __weak typeof(self) weakSelf = self;
         [self getText:^(NSString * result, NSError * _Nullable error) {
-            [self checkForMentionOrHashtagInText:result];
+            [weakSelf checkForMentionOrHashtagInText:result];
         }];
         
         if (self.editorPaste) {
@@ -2148,7 +2206,7 @@ static CGFloat kDefaultScale = 0.5;
             self.selectedImageScale = [textFieldScale.text floatValue]?:kDefaultScale;
             self.selectedImageAlt = textFieldAlt.text?:@"";
             
-            [self presentViewController:self.imagePicker animated:YES completion:nil];
+            [self.presentViewController presentViewController:self.imagePicker animated:YES completion:nil];
             
         }
     }
@@ -2244,7 +2302,7 @@ static CGFloat kDefaultScale = 0.5;
             
             // Source View
             CGRect sourceFrame = self.sourceView.frame;
-            sourceFrame.size.height = (self.view.frame.size.height - keyboardHeight) - sizeOfToolbar - extraHeight;
+            sourceFrame.size.height = (self.frame.size.height - keyboardHeight) - sizeOfToolbar - extraHeight;
             self.sourceView.frame = sourceFrame;
             
             // Provide editor with keyboard height and editor view height
@@ -2262,11 +2320,11 @@ static CGFloat kDefaultScale = 0.5;
             if (self->_alwaysShowToolbar) {
                 CGFloat bottomSafeAreaInset = 0.0;
                 if (@available(iOS 11.0, *)) {
-                    bottomSafeAreaInset = self.view.safeAreaInsets.bottom;
+                    bottomSafeAreaInset = self.safeAreaInsets.bottom;
                 }
-                frame.origin.y = self.view.frame.size.height - sizeOfToolbar - bottomSafeAreaInset;
+                frame.origin.y = self.frame.size.height - sizeOfToolbar - bottomSafeAreaInset;
             } else {
-                frame.origin.y = self.view.frame.size.height + keyboardHeight;
+                frame.origin.y = self.frame.size.height + keyboardHeight;
             }
             
             self.toolbarHolder.frame = frame;
@@ -2275,9 +2333,9 @@ static CGFloat kDefaultScale = 0.5;
             CGRect editorFrame = self.editorView.frame;
             
             if (self->_alwaysShowToolbar) {
-                editorFrame.size.height = ((self.view.frame.size.height - sizeOfToolbar) - extraHeight);
+                editorFrame.size.height = ((self.frame.size.height - sizeOfToolbar) - extraHeight);
             } else {
-                editorFrame.size.height = self.view.frame.size.height;
+                editorFrame.size.height = self.frame.size.height;
             }
             
             self.editorView.frame = editorFrame;
@@ -2289,9 +2347,9 @@ static CGFloat kDefaultScale = 0.5;
             CGRect sourceFrame = self.sourceView.frame;
             
             if (self->_alwaysShowToolbar) {
-                sourceFrame.size.height = ((self.view.frame.size.height - sizeOfToolbar) - extraHeight);
+                sourceFrame.size.height = ((self.frame.size.height - sizeOfToolbar) - extraHeight);
             } else {
-                sourceFrame.size.height = self.view.frame.size.height;
+                sourceFrame.size.height = self.frame.size.height;
             }
             
             self.sourceView.frame = sourceFrame;
@@ -2382,8 +2440,8 @@ static CGFloat kDefaultScale = 0.5;
 }
 
 #pragma mark - Memory Warning Section
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-}
+//- (void)didReceiveMemoryWarning {
+//    [super didReceiveMemoryWarning];
+//}
 
 @end

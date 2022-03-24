@@ -8,16 +8,23 @@
 
 #import "ZSSDemoViewController.h"
 #import "ZSSDemoPickerViewController.h"
-
+#import "ZSSRichTextEditor.h"
 
 #import "DemoModalViewController.h"
 
 
 @interface ZSSDemoViewController ()
 
+@property (nonatomic, strong) ZSSRichTextEditor *richTextEditor;
+
 @end
 
 @implementation ZSSDemoViewController
+
+- (void)loadView {
+    _richTextEditor = [[ZSSRichTextEditor alloc] initWithFrame:[UIScreen mainScreen].bounds presentViewController:self];
+    self.view = _richTextEditor;
+}
 
 
 - (void)viewDidLoad {
@@ -27,10 +34,10 @@
     
     //Set Custom CSS
     NSString *customCSS = @"";
-    [self setCSS:customCSS];
+    [_richTextEditor setCSS:customCSS];
         
-    self.alwaysShowToolbar = YES;
-    self.receiveEditorDidChangeEvents = NO;
+    _richTextEditor.alwaysShowToolbar = YES;
+    _richTextEditor.receiveEditorDidChangeEvents = NO;
     
     // Export HTML
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Export" style:UIBarButtonItemStylePlain target:self action:@selector(exportHTML)];
@@ -40,19 +47,19 @@
     "<p>This is a test of the <strong>ZSSRichTextEditor</strong> by <a title=\"Zed Said\" href=\"http://www.zedsaid.com\">Zed Said Studio</a></p>";
     
     // Set the base URL if you would like to use relative links, such as to images.
-    self.baseURL = [NSURL URLWithString:@"http://www.zedsaid.com"];
-    self.shouldShowKeyboard = NO;
+    _richTextEditor.baseURL = [NSURL URLWithString:@"http://www.zedsaid.com"];
+    _richTextEditor.shouldShowKeyboard = NO;
     // Set the HTML contents of the editor
-    [self setPlaceholder:@"This is a placeholder that will show when there is no content(html)"];
+    [_richTextEditor setPlaceholder:@"This is a placeholder that will show when there is no content(html)"];
     
-    [self setHTML:html];
+    [_richTextEditor setHTML:html];
     
 }
 
 
 - (void)showInsertURLAlternatePicker {
     
-    [self dismissAlertView];
+    [_richTextEditor dismissAlertView];
     
     ZSSDemoPickerViewController *picker = [[ZSSDemoPickerViewController alloc] init];
     picker.demoView = self;
@@ -65,7 +72,7 @@
 
 - (void)showInsertImageAlternatePicker {
     
-    [self dismissAlertView];
+    [_richTextEditor dismissAlertView];
     
     ZSSDemoPickerViewController *picker = [[ZSSDemoPickerViewController alloc] init];
     picker.demoView = self;
@@ -78,7 +85,7 @@
 
 
 - (void)exportHTML {
-    [self getHTML:^(NSString *result, NSError * _Nullable error) {
+    [self.richTextEditor getHTML:^(NSString *result, NSError * _Nullable error) {
         NSLog(@"%@", result);
     }];
 }

@@ -61,9 +61,9 @@ static NSString * const ZSSEditorContent = @"document.activeElement.id=='zss_edi
 /**
  *  The viewController used with ZSSRichTextEditor
  */
-@interface ZSSRichTextEditor : UIViewController <WKUIDelegate, WKNavigationDelegate, WKScriptMessageHandler, HRColorPickerViewControllerDelegate, UITextViewDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate,ZSSFontsViewControllerDelegate>
+@interface ZSSRichTextEditor : UIView <WKUIDelegate, WKNavigationDelegate, WKScriptMessageHandler, HRColorPickerViewControllerDelegate, UITextViewDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate,ZSSFontsViewControllerDelegate>
 
-
+- (instancetype)initWithFrame:(CGRect)frame presentViewController:(__weak UIViewController *)presentViewController;
 /**
  *  The base URL to use for the webView
  */
