@@ -81,6 +81,12 @@ static NSString * const ZSSEditorContent = @"document.activeElement.id=='zss_edi
 @property (nonatomic, strong) WKWebView *editorView;
 
 /*
+ *  CGRect for holding the frame for the editor view
+ */
+@property (nonatomic) CGRect editorViewFrame;
+
+@property (nonatomic, strong, readonly) NSString *internalHTML;
+/*
  *  Holder for all of the toolbar components
  */
 @property (nonatomic, strong) UIView *toolbarHolder;
@@ -286,7 +292,7 @@ static NSString * const ZSSEditorContent = @"document.activeElement.id=='zss_edi
 - (void)heading4;
 - (void)heading5;
 - (void)heading6;
-
+- (void)updateHTML;
 @end
 
 NS_ASSUME_NONNULL_END
