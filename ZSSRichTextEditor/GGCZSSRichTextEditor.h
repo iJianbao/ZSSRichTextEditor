@@ -12,6 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol GGCZSSRichTextEditorUploadImageDelegate <NSObject>
 
+- (NSString *)baseImageUrl;
 - (void)uploadImages:(NSArray<UIImage *> *)images complete:(void(^)(NSArray<NSString *> *))completeBlock;
 
 @end

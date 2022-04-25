@@ -276,11 +276,13 @@
     NSData *scaledImageData = UIImageJPEGRepresentation(scaledImage, 0.8);
     NSString *imageBase64String = [scaledImageData base64EncodedStringWithOptions:0];
     selectedImage = [GGCZSSRichTextEditor thumbnailWithImageWithScaleImage:selectedImage percent:.5];
+    
+    NSMutableArray<NSString *> *base64Ary = @[imageBase64String].mutableCopy;
     __weak typeof(self) weakSelf = self;
-    [self.uploadImageDelegate uploadImages:[selectedImage] complete:^(NSArray<NSString *> * urlAry) {
+    [self.uploadImageDelegate uploadImages:@[selectedImage] complete:^(NSArray<NSString *> * urlAry) {
         for (int i = 0; i < urlAry.count; i++) {
-            NSString *imageURL = [NSString stringWithFormat:@"%@/%@",kBaseImageURL, urlAry[i]];
-            [weakSelf.baseUrlDict addObject:imageURL forKey:base64Ary[i]];
+            NSString *imageURL = [NSString stringWithFormat:@"%@/%@", [weakSelf.uploadImageDelegate baseImageUrl], urlAry[i]];
+            [weakSelf.baseUrlDict setObject:imageURL forKey:base64Ary[i]];
             [weakSelf insertImageBase64String:base64Ary[i] alt:weakSelf.selectedImageAlt];
             weakSelf.imageBase64String = base64Ary[i];
         }
@@ -324,8 +326,8 @@
     __weak typeof(self) weakSelf = self;
     [self.uploadImageDelegate uploadImages:imageAry complete:^(NSArray<NSString *> * urlAry) {
         for (int i = 0; i < urlAry.count; i++) {
-            NSString *imageURL = [NSString stringWithFormat:@"%@/%@",kBaseImageURL, urlAry[i]];
-            [weakSelf.baseUrlDict addObject:imageURL forKey:base64Ary[i]];
+            NSString *imageURL = [NSString stringWithFormat:@"%@/%@",[weakSelf.uploadImageDelegate baseImageUrl], urlAry[i]];
+            [weakSelf.baseUrlDict setObject:imageURL forKey:base64Ary[i]];
             [weakSelf insertImageBase64String:base64Ary[i] alt:weakSelf.selectedImageAlt];
             weakSelf.imageBase64String = base64Ary[i];
         }
