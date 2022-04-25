@@ -124,6 +124,7 @@
 		DB703BB61D7B73600013C608 /* ZSSFontsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DB703BB51D7B73600013C608 /* ZSSFontsViewController.m */; };
 		DB703BB91D7B774F0013C608 /* ZSSfonts.png in Resources */ = {isa = PBXBuildFile; fileRef = DB703BB71D7B774F0013C608 /* ZSSfonts.png */; };
 		DB703BBA1D7B774F0013C608 /* ZSSfonts@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DB703BB81D7B774F0013C608 /* ZSSfonts@2x.png */; };
+		E221D37B28168F1100DE1030 /* GGCZSSRichTextEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = E221D37928168F1100DE1030 /* GGCZSSRichTextEditor.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -274,6 +275,8 @@
 		DB703BB51D7B73600013C608 /* ZSSFontsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ZSSFontsViewController.m; path = Source/ZSSFontsViewController.m; sourceTree = "<group>"; };
 		DB703BB71D7B774F0013C608 /* ZSSfonts.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ZSSfonts.png; path = Source/Images/ZSSfonts.png; sourceTree = "<group>"; };
 		DB703BB81D7B774F0013C608 /* ZSSfonts@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ZSSfonts@2x.png"; path = "Source/Images/ZSSfonts@2x.png"; sourceTree = "<group>"; };
+		E221D37928168F1100DE1030 /* GGCZSSRichTextEditor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGCZSSRichTextEditor.m; sourceTree = "<group>"; };
+		E221D37A28168F1100DE1030 /* GGCZSSRichTextEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GGCZSSRichTextEditor.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -496,6 +499,8 @@
 				456A5977189C58C400FAEF89 /* Views */,
 				4581EBB9184B0F5C0048CAB0 /* ZSSRichTextEditor.h */,
 				4581EBBA184B0F5C0048CAB0 /* ZSSRichTextEditor.m */,
+				E221D37A28168F1100DE1030 /* GGCZSSRichTextEditor.h */,
+				E221D37928168F1100DE1030 /* GGCZSSRichTextEditor.m */,
 			);
 			name = ZSSRichTextEditor;
 			sourceTree = "<group>";
@@ -716,6 +721,7 @@
 				2343B229199D237100349048 /* ZSSPlaceholderViewController.m in Sources */,
 				45A0CA5118A8522A00F3F35E /* HRColorUtil.m in Sources */,
 				45A0CA3D18A8521600F3F35E /* CYRTextView.m in Sources */,
+				E221D37B28168F1100DE1030 /* GGCZSSRichTextEditor.m in Sources */,
 				45A0CA3B18A8521600F3F35E /* CYRLayoutManager.m in Sources */,
 				45A0CA4E18A8522A00F3F35E /* HRColorCursor.m in Sources */,
 				4581EBB81848F8190048CAB0 /* ZSSDemoViewController.m in Sources */,

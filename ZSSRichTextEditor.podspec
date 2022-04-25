@@ -32,6 +32,6 @@ Pod::Spec.new do |s|
   s.resources = "**/ZSS*.png", "**/ZSSRichTextEditor.js", "**/editor.html", "**/jQuery.js", "**/JSBeautifier.js"
 
   s.frameworks = "CoreGraphics", "CoreText"
-
   s.requires_arc = true
+  s.dependency 'TZImagePickerController', '~> 3.5.0'
 end
