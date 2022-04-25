@@ -29,7 +29,7 @@ Pod::Spec.new do |s|
 
   s.source_files  = "**/*.{h,m}"
   s.exclude_files = "**/ZSSDemo*.{h,m}", "**/ZSSAppDelegate*.{h,m}", "**/main.m"
-  s.resources = "**/ZSS*.png", "**/ZSSRichTextEditor.js", "**/editor.html", "**/jQuery.js", "**/JSBeautifier.js"
+  s.resources = "**/ZSS*.png", "**/ZSSRichTextEditor.js", "**/editor.html", "**/jQuery.js", "**/JSBeautifier.js", "**/GGCZSSRichTextEditor.js", "**/GCeditor.html"
 
   s.frameworks = "CoreGraphics", "CoreText"
   s.requires_arc = true
