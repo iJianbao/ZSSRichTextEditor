@@ -125,8 +125,8 @@
 		DB703BB91D7B774F0013C608 /* ZSSfonts.png in Resources */ = {isa = PBXBuildFile; fileRef = DB703BB71D7B774F0013C608 /* ZSSfonts.png */; };
 		DB703BBA1D7B774F0013C608 /* ZSSfonts@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DB703BB81D7B774F0013C608 /* ZSSfonts@2x.png */; };
 		E221D37B28168F1100DE1030 /* GGCZSSRichTextEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = E221D37928168F1100DE1030 /* GGCZSSRichTextEditor.m */; };
-		E221D38A2816A5A500DE1030 /* GCeditor.html in Resources */ = {isa = PBXBuildFile; fileRef = E221D3882816A5A500DE1030 /* GCeditor.html */; };
-		E221D38B2816A5A500DE1030 /* GGCZSSRichTextEditor.js in Resources */ = {isa = PBXBuildFile; fileRef = E221D3892816A5A500DE1030 /* GGCZSSRichTextEditor.js */; };
+		E221D38E2816A6F500DE1030 /* GCeditor.html in Resources */ = {isa = PBXBuildFile; fileRef = E221D38C2816A6F500DE1030 /* GCeditor.html */; };
+		E221D38F2816A6F500DE1030 /* GGCZSSRichTextEditor.js in Resources */ = {isa = PBXBuildFile; fileRef = E221D38D2816A6F500DE1030 /* GGCZSSRichTextEditor.js */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -279,8 +279,8 @@
 		DB703BB81D7B774F0013C608 /* ZSSfonts@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ZSSfonts@2x.png"; path = "Source/Images/ZSSfonts@2x.png"; sourceTree = "<group>"; };
 		E221D37928168F1100DE1030 /* GGCZSSRichTextEditor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGCZSSRichTextEditor.m; sourceTree = "<group>"; };
 		E221D37A28168F1100DE1030 /* GGCZSSRichTextEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GGCZSSRichTextEditor.h; sourceTree = "<group>"; };
-		E221D3882816A5A500DE1030 /* GCeditor.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = GCeditor.html; sourceTree = "<group>"; };
-		E221D3892816A5A500DE1030 /* GGCZSSRichTextEditor.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = GGCZSSRichTextEditor.js; sourceTree = "<group>"; };
+		E221D38C2816A6F500DE1030 /* GCeditor.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = GCeditor.html; path = Source/GCeditor.html; sourceTree = "<group>"; };
+		E221D38D2816A6F500DE1030 /* GGCZSSRichTextEditor.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = GGCZSSRichTextEditor.js; path = Source/GGCZSSRichTextEditor.js; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -512,8 +512,8 @@
 		4581EBBE184BB92E0048CAB0 /* Editor Resources */ = {
 			isa = PBXGroup;
 			children = (
-				E221D3882816A5A500DE1030 /* GCeditor.html */,
-				E221D3892816A5A500DE1030 /* GGCZSSRichTextEditor.js */,
+				E221D38C2816A6F500DE1030 /* GCeditor.html */,
+				E221D38D2816A6F500DE1030 /* GGCZSSRichTextEditor.js */,
 				23A76DC2187532F1000169F6 /* editor.html */,
 				23A76DC3187532F1000169F6 /* ZSSRichTextEditor.js */,
 				DB703BB01D7B2FEA0013C608 /* jQuery.js */,
@@ -656,7 +656,7 @@
 				45F73D4018D7AE9700CD6DBA /* ZSSpicker.png in Resources */,
 				DB703BB91D7B774F0013C608 /* ZSSfonts.png in Resources */,
 				45F73D4818D7AE9700CD6DBA /* ZSStextcolor.png in Resources */,
-				E221D38B2816A5A500DE1030 /* GGCZSSRichTextEditor.js in Resources */,
+				E221D38F2816A6F500DE1030 /* GGCZSSRichTextEditor.js in Resources */,
 				45F73D4618D7AE9700CD6DBA /* ZSSsuperscript.png in Resources */,
 				45F860AB18A84CFA0011266B /* ZSSforcejustify@2x.png in Resources */,
 				45F73D3618D7AE9700CD6DBA /* ZSShorizontalrule.png in Resources */,
@@ -674,7 +674,7 @@
 				45F860C118A84CFA0011266B /* ZSSsuperscript@2x.png in Resources */,
 				45F73D2B18D7AE9700CD6DBA /* ZSSbgcolor.png in Resources */,
 				45F860B318A84CFA0011266B /* ZSSimage@2x.png in Resources */,
-				E221D38A2816A5A500DE1030 /* GCeditor.html in Resources */,
+				E221D38E2816A6F500DE1030 /* GCeditor.html in Resources */,
 				45F860BC18A84CFA0011266B /* ZSSquicklink@2x.png in Resources */,
 				45F73D4118D7AE9700CD6DBA /* ZSSquicklink.png in Resources */,
 				2343B1D6199A776A00349048 /* ZSSinsertkeyword@2x.png in Resources */,
